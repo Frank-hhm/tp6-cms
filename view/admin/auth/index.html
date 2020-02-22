@@ -1,0 +1,69 @@
+{extend name='main'}
+{block name="button"}
+    {if auth("admin/auth/add")}
+        <button data-modal='{:url("add")}' data-title="添加角色" class='ui-btn'>添加角色</button>
+    {/if}
+{/block}
+{block name="content"}
+<div class="think-box-shadow">
+    <table class="layui-table margin-top-10" lay-skin="line">
+        {notempty name='list'}
+        <thead>
+        <tr>
+            <th class='text-left nowrap'>权限信息</th>
+            <th class='text-left nowrap'>创建时间</th>
+            <th class='text-center nowrap'>使用状态</th>
+            <th class='text-left nowrap'></th>
+        </tr>
+        </thead>
+        {/notempty}
+        <tbody>
+        {foreach $list as $key=>$vo}
+        <tr data-dbclick>
+            <td class='text-left nowrap'>
+                <span>权限名称：{$vo.title|default=''}</span><br/>
+                <span class="text-gray">权限描述：{$vo.desc|default=''}</span>
+            </td>
+            <td class='text-left nowrap'><span class="text-grey">日期：{$vo.create_at|format_datetime|str_replace=' ','<br>时间：',###|raw}</span></td>
+            <td class='text-center nowrap'>
+                {if $vo.status eq 10 }
+                    {if auth("admin/auth/forbid")}
+                        <a class="text-green"  data-action="{:url('forbid')}" data-value="auth_id#{$vo.auth_id}" data-csrf="{:url('forbid')}">使用中</a>
+                    {else}
+                        <span class="text-green">使用中</span>
+                    {/if}
+                {else}
+                    {if auth("admin/auth/remove")}
+                        <a class="text-red" data-action="{:url('resume')}" data-value="auth_id#{$vo.auth_id}" data-csrf="{:url('resume')}">已禁用</a>
+                    {else}
+                        <span class="text-red">已禁用</span>
+                    {/if}
+                {/if}
+            </td>
+            <td class='text-right nowrap'>
+                {if auth("admin/auth/apply")}
+                    <a class="ui-btn xs bg-black" data-open='{:url("apply")}?auth_id={$vo.auth_id}'>授 权</a>
+                {/if}
+                {if auth("admin/auth/edit")}
+                    <a data-dbclick class="ui-btn xs bg-yellow" data-title="编辑角色" data-modal='{:url("edit")}?auth_id={$vo.auth_id}'><i class="ui ui-edit"></i></a>
+                {/if}
+                {if auth("admin/auth/remove")}
+                <a class="ui-btn xs bg-gray" data-confirm="确定要删除该角色吗？" data-action="{:url('remove')}" data-value="auth_id#{$vo.auth_id}"><i class="ui ui-del"></i></a>
+                {/if}
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+
+
+    {empty name='list'}
+    <div class="empty-data"><img src="__STATIC__/common/img/empty.png"></div>
+    <span class="notdata">暂无数据</span>
+    {else}
+    {$list|raw|default=''}
+    {/empty}
+    
+</div>
+
+{/block}

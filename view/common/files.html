@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>{block name="title"}{$title|default=''}{if !empty($title)} · {/if}{:sysconf('site_name')}{/block}</title>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=0.4">
+    <link rel="shortcut icon" href="{:sysconf('site_icon')}">
+    <link rel="stylesheet" href="__STATIC__/plugs/awesome/fonts.css?at={:date('md')}">
+    <link rel="stylesheet" href="__STATIC__/plugs/layui/css/layui.css?at={:date('md')}">
+    <link rel="stylesheet" href="__STATIC__/common/css/style.css?t={:time()}">
+    <script src="__STATIC__/plugs/jquery/vue.min.js"></script>
+    <script>window.ROOT_URL = '__ROOT__';</script>
+    <script src="__STATIC__/plugs/jquery/pace.min.js"></script>
+    <style>
+    ::-webkit-input-placeholder{color:#aaa}
+    ::-webkit-scrollbar{width:6px;height:6px}
+    ::-webkit-scrollbar-track{background:#fff!important}
+    ::-webkit-scrollbar-thumb{background-color:#666!important}
+    ::selection{color:#fff!important;background-color:#ec494e!important}
+    ::-moz-selection{color:#fff!important;background-color:#ec494e!important}
+        /* 文件库 */
+    .file-library{
+        display: flex;
+        padding: 20px;
+        justify-content:space-around;
+        height: 560px;
+    }
+    .file-group{
+        width: 150px;
+        height: 600px;
+        position: relative;
+    }
+    .file-group-list{
+        width: 156px;
+        height: 500px;
+        overflow-y:scroll;
+        position: absolute;
+        top:50px;
+    }
+    .file-group .group-item{
+        position: relative;
+        text-align: center;
+        line-height: 40px;
+        cursor: pointer;
+    }
+    .file-group .group-item:hover{
+        color: var(--white);
+        background: var(--black);
+    }
+    .file-group .group-item.active{
+        color: #fff;
+        background: var(--default);
+    }
+
+    .new-group{
+        color: #fff;
+        background: var(--black);
+        position: absolute;
+        top: 0;
+        width: 100%;
+        margin-bottom: 30px;
+        text-align: center;
+        line-height: 40px;
+        cursor: pointer;
+    }
+    .file-box{
+        width: calc(100% - 200px);
+    }
+    .file-box-head{
+        display: flex;
+        justify-content: space-between;
+    }
+    .file-bottom{
+        position: absolute;
+        width: 90%;
+        left: 5%;
+        bottom: 0;
+    }
+    .file-library .file-group .group-item .group-edit {
+        display: none;
+        position: absolute;
+        top: 0;
+        left:12px;
+    }
+    .file-library .file-group .group-item .group-delete {
+        display: none;
+        position: absolute;
+        top: 0;
+        right:12px;
+    }
+    .group-item.groups:hover .group-edit,.group-item.groups:hover .group-delete{
+        display:block!important;
+    }
+    .files-list .files-item .img-cover {
+        width: 120px;
+        height: 120px;
+        background: no-repeat center center / 100%;
+    }
+    .files-list{
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .file-library .files-list .files-item{
+        position: relative;
+        cursor: pointer;
+        padding: 10px;
+        border:4px solid rgba(0, 0, 0, 0.1);
+        float: left;
+        width: 120px;
+        margin:10px 10px 8px 0;
+        -webkit-transition: All 0.2s ease-in-out;
+        -moz-transition: All 0.2s ease-in-out;
+        -o-transition: All 0.2s ease-in-out;
+        transition: All 0.2s ease-in-out;
+    }
+    .file-library .files-list .files-item:hover{
+        border:4px solid var(--blue);
+    }
+    .file-library .files-list .files-item p.file-name{
+        word-wrap: normal;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    .file-library .files-list .files-item.active .select-mask {
+        display: block;
+    }
+    .file-library .files-list .files-item.active .select-mask img {
+        position: absolute;
+        width: 40px;
+        height: 28px;
+        top: calc(50% - 14px);
+        left: calc(50% - 20px);
+    }
+    .file-library .files-list .files-item .select-mask {
+        display: none;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+        text-align: center;
+    }
+    .v-box-footer{
+        margin:0 50px;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .file-box-head-left{
+        display: flex;
+        justify-content: flex-start;
+    }
+    .move-group-box{
+        position: relative;
+    }
+    .move-group-box .group-list{
+        position: absolute;
+        min-width: 160px;
+        top: 30px;
+        left: 0;
+        background: #fff;
+        z-index: 999;
+        border:1px solid #e3e3e3;
+        display: none;
+    }
+    .move-group-box .group-list .gl-item{
+        height: 35px;
+        line-height: 35px;
+        cursor: pointer;
+        padding: 0 40px;
+    }
+    .move-group-box .group-list .gl-item:hover{
+        text-decoration: none;
+        color: #262626;
+        background-color:var(--default);
+    }
+    .gl-dropdown-header{
+        display: block;
+        padding: 6px 20px;
+        font-size: 12px;
+        color: #999;
+    }
+</style>
+</head>
+
+<body class="layui-layout-body">
+<div id="file_box">
+    <div class="file-library">
+        <!-- 组 -->
+        <div class="file-group">
+            <div class="new-group" v-on:click="newGroup">新增分组</div>
+            <div class="file-group-list">
+                <div class="group-item" v-bind:class="is_default?'active':''" @click="setGroup(-1)">
+                    全部
+                </div>
+                <div class="group-item" v-bind:class="group_id == 0?'active':''" @click="setGroup(0)">
+                    未分组
+                </div>
+                <div class="group-item groups" v-bind:class="group_id == group.group_id?'active':''" v-for="group in groups" @click="setGroup(group.group_id)">
+                    <div class="group-edit"  @click="editGroup(group.group_id,group.name)" title="编辑分组" >
+                        <i class="fa fa-file-text"></i>
+                    </div>
+                    <div class="group-name" >
+                         {{ group.name}}
+                    </div>
+                    <div class="group-delete"  @click="delGroup(group.group_id)" title="删除分组">
+                        <i class="fa fa-trash"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="file-box">
+            <div class="file-box-head">
+                <div class="file-box-head-left">
+                    <div class="move-group-box">
+                        <div class="ui-btn bg-grey move-group-btn">移动到分组</div>
+                        <div class="group-list">
+                            <div class="gl-dropdown-header">请选择分组</div>
+                            <div class="gl-item" v-for="group in groups" @click="moveGroup(group.group_id)">{{ group.name}}</div>
+                        </div>
+                    </div>
+                    <div class="ui-btn bg-gray margin-left-10" @click='delFile()'>删除</div>
+                </div>
+
+                <div class="ui-btn j-upload">上传图片</div>
+            </div>
+            <div class="files-list">
+                <div class="files-item " v-for="(file,index) in files" :key=index v-bind:file-id="file.file_id" v-bind:file-url="file.file_url">
+                    <div class="img-cover" v-bind:style="{backgroundImage:'url(' + file.file_url + ')'}"></div>
+                    <p class="file-name ">{{file.file_name}}</p>
+                    <div class="select-mask">
+                        <img src="__STATIC__/common/img/chose.png">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="v-box-footer">
+        <div id="page"></div>
+    </div>
+
+    {if isset($field) and $field neq 'umeditor'}
+    <div class="hr-line-dashed"></div>
+
+    <div class="layui-form-item text-center">
+        <button class="ui-btn" @click='setYes()'>确定</button>
+        <button class="ui-btn bg-gray" data-close>取消</button>
+    </div>
+    {/if}
+
+</div>
+<script src="__STATIC__/plugs/layui/layui.all.js"></script>
+<script src="__STATIC__/plugs/require/require.js"></script>
+<script src="__STATIC__/common/style.js?t={:time()}"></script>
+<script>
+
+var file_box = new Vue({
+    el: '#file_box',
+    data: {
+        group_id:-1,
+        is_default:true,
+        groups: [],
+        files: [],
+        selectedList:[],
+        selectedArr:[],
+        last_page:1,
+        total:0
+    },
+    created: function () {
+        let _this = this
+        _this.initData();
+    },
+    methods: {
+        page:function(){
+            let _this = this;
+            window.laypage.render({
+                elem: 'page'
+                ,count:_this.total
+                ,layout: ['prev', 'next']
+                ,jump: function(obj, first){
+                    _this.last_page = obj.curr
+                    if(!first){
+                        file_box.initData();
+                    }
+                }
+            });
+        },
+        initData:function(){
+            let _this = this;
+            $.get(ROOT_URL + '/api.files/list', {page:_this.last_page,group_id:_this.group_id}, function (result) {
+                if (result.code === 1) {
+                    _this.groups = result.data.group_list
+                    var files = result.data.file_list;
+                    _this.files = files.data
+                    _this.total= files.total
+                    if(_this.last_page==1){
+                        _this.page();
+                    }
+                    _this.selectedList=[]
+                    _this.selectedArr=[]
+                    $('.files-item').removeClass('active')
+                }
+            })
+        },
+        newGroup: function (event) {
+            let _this = this
+            layer.prompt({title:false}, function (value, index) {
+                var load = layer.load(2);
+                $.post(ROOT_URL + '/api.files/addGroup', {
+                    name: value,
+                }, function (result) {
+                    require(['message'], function (_$) {_$.add(result.msg)});
+                    if (result.code === 1) {
+                        _this.groups.push(result.data)
+                    }
+                    layer.close(load);
+                });
+                layer.close(index);
+            });
+        },
+        setGroup:function(group_id){
+            let _this = this;
+            _this.is_default = false;
+            _this.group_id = group_id;
+            _this.last_page = 1
+            if(group_id == -1) _this.is_default = true;
+            _this.initData();
+        },
+        editGroup:function(group_id,val){
+            let _this = this;
+            layer.prompt({title:false, value:val}, function (value, index) {
+                var load = layer.load(2);
+                $.post(ROOT_URL + '/api.files/editGroup', {
+                    group_id: group_id
+                    ,name: value
+                }, function (result) {
+                    require(['message'], function (_$) {_$.add(result.msg)});
+                    if (result.code === 1) {
+                        _this.initData();
+                    }
+                    layer.close(load);
+                });
+                layer.close(index);
+            });
+            return false;
+        },
+        delGroup:function(group_id){
+            let _this = this;
+            layer.confirm('确定删除该分组吗？', {title:false}, function (index) {
+                var load = layer.load(2);
+                $.post(ROOT_URL + '/api.files/deleteGroup', {
+                    group_id: group_id
+                }, function (result) {
+                    require(['message'], function (_$) {_$.add(result.msg)});
+                    if (result.code === 1) {
+                        _this.setGroup(-1);
+                    }
+                    layer.close(load);
+                });
+                layer.close(index);
+            });
+            return false;
+        },
+        delFile:function(e){
+            let _this = this;
+            if(_this.selectedArr.length === 0){
+                require(['message'], function (_$) {_$.add('请选择文件','error')});return false;
+            }
+            layer.confirm('确定这些图片吗？', {title:false}, function (index) {
+                var load = layer.load(2);
+                $.post(ROOT_URL + '/api.files/deleteFiles', {
+                    file_id: _this.selectedArr
+                }, function (result) {
+                    require(['message'], function (_$) {_$.add(result.msg)});
+                    if (result.code === 1) {
+                        _this.initData();
+                    }
+                    layer.close(load);
+                });
+                layer.close(index);
+            });
+            return false;
+        },
+        moveGroup:function(group_id){
+            let _this = this;
+            _this.last_page = 1
+            if(_this.selectedArr.length === 0){
+                require(['message'], function (_$) {_$.add('请选择文件','error')});return false;
+            }
+            $.post(ROOT_URL + '/api.files/moveFiles', {
+                group_id: group_id,
+                file_id: _this.selectedArr
+            }, function (result) {
+                require(['message'], function (_$) {_$.add(result.msg)});
+                if (result.code === 1) {
+                    _this.initData();
+                }
+            });
+        },
+        setYes:function(){
+            let _this = this;
+            if(_this.selectedArr.length === 0){
+                require(['message'], function (_$) {_$.add('请选择文件','error')});return false;
+            }
+            if('<?php echo $multiple;?>' === 'false'){
+                top.$('[data-field="{$field}"]').next('span').attr('data-tips-image',_this.selectedList[0].file_url);
+                console.log(top.$('[name="{$fileId}"]'))
+                console.log(_this.selectedList[0].file_id)
+                top.$('[name="{$fileId}"]').val(_this.selectedList[0].file_id).trigger('change');
+                top.$('[name="{$field}"]').val(_this.selectedList[0].file_url).trigger('change');
+            }else{
+                var $html = '';
+                var $file_url = [];
+                if(top.$('[name="{$field}"]').val()!=''){
+                    $file_url = top.$('[name="{$field}"]').val().split(',');
+                }
+                for (var i = 0; i < _this.selectedList.length; i++) {
+                    $html +='<div class="img-item-box"><div class="img-item" data-tips-image='+ _this.selectedList[i].file_url+' style="background-image: url('+ _this.selectedList[i].file_url+');" ></div><div class="tools-box"><a class="layui-icon margin-right-5 img-right"></a><a class="layui-icon margin-right-5 img-del">ဆ</a><a class="layui-icon margin-right-5 img-left"></a></div></div>';
+                    $file_url.push(_this.selectedList[i].file_url);
+                }
+                top.$('[name="{$field}"]').val($file_url).trigger('change');
+                top.$('[data-mult="{$field}"]').parent('.uploadimage-box').before($html);
+            }
+            top.layer.close(top.layer.getFrameIndex(window.name));
+        }
+    }
+})
+</script>
+
+<script>
+
+    window.form.render();
+    $('body').find('[data-close]').off('click').on('click', function () {
+        top.layer.close(top.layer.getFrameIndex(window.name));
+    });
+    var uploader = window.upload.render({
+        elem: '.j-upload'
+        ,url: ROOT_URL + '/api.Plugs/upload'
+        ,accept: 'file'
+        ,multiple: true
+        ,exts: 'gif|jpg|jpeg|bmp|png'
+        ,before: function(obj){
+            console.log(obj)
+        }
+        ,done: function(res){
+            require(['message'], function (_$) {_$.add(res.msg)});
+            file_box.initData();
+        }
+    });
+    $('body').on('click', '.move-group-btn', function (event) {
+         event.stopPropagation();
+        $('.group-list').slideToggle(1);
+    });
+     $(document).click(function(){
+        $('.group-list').slideUp(1);
+    });
+    $('.files-list').on('click', '.files-item', function () {
+        var $this = $(this)
+            , data = {
+                file_id: $this.attr('file-id')
+                , file_url: $this.attr('file-url')
+            },selectedList = file_box.selectedList
+            , selectedArr = file_box.selectedArr
+            , index = arrayFilterMultiple(selectedList, 'file_id', data.file_id);
+            // if('<?php echo $multiple;?>' === 'false'){
+            //     if(selectedArr[0] != data.file_id){
+            //         index === false ? selectedList[0] = data : selectedList.splice(index, 1);
+            //         index === false ? selectedArr[0] = data.file_id : selectedArr.splice(index, 1);
+            //         $('.files-item.active').removeClass('active');
+            //         $this.toggleClass('active');
+            //     }else{
+
+            //     }
+            // }else{
+            //     index === false ? selectedList.push(data) : selectedList.splice(index, 1);
+            //     index === false ? selectedArr.push( data.file_id) : selectedArr.splice(index, 1);
+            //     // 选中状态
+            //     $this.toggleClass('active');
+            // }
+            index === false ? selectedList.push(data) : selectedList.splice(index, 1);
+            index === false ? selectedArr.push( data.file_id) : selectedArr.splice(index, 1);
+            // $('[name="umeditorData"]').val(JSON.stringify(selectedList));
+            // 选中状态
+            $this.toggleClass('active');
+    });
+
+    /**
+     * 二维数据查找
+     * @param array
+     * @param key
+     * @param value
+     * @returns {*}
+     */
+    function arrayFilterMultiple(array, key, value) {
+        for (var index in array) {
+            if (array[index][key] == value) return index;
+        }
+        return false;
+    }
+    // 富文本回调获取图片
+    var umeditorData = function() {
+        return file_box.selectedList;
+    }
+</script>
+</body>
+</html>

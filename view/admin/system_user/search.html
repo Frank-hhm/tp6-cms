@@ -1,0 +1,29 @@
+<fieldset>
+
+    <legend>条件搜索</legend>
+
+    <form class="layui-form form-search" action="{:request()->url()}" onsubmit="return false" method="get" autocomplete="off">
+        <div class="layui-form-item layui-inline layui-form-pane ">
+            <label class="layui-form-label">账号信息</label>
+            <div class="layui-input-inline">
+                <input name="search" value="<?= $request->get('search') ?>" class="layui-input" placeholder="请输入账号/手机/邮箱/QQ">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-inline layui-form-pane">
+            <label class="layui-form-label">创建时间</label>
+            <div class="layui-input-inline">
+                <input data-date-input="date" name="start_time" value="<?= $request->get('start_time') ?>" placeholder="请选择起始日期" class="layui-input">
+            </div>
+            <div class="layui-input-inline">
+                <input data-date-input="date" name="end_time" value="<?= $request->get('end_time') ?>" placeholder="请选择截止日期" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <button class="ui-btn bg-gray"><i class="layui-icon">&#xe615;</i></button>
+        </div>
+    </form>
+</fieldset>
+
+<script>form.render()</script>

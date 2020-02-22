@@ -1,0 +1,47 @@
+
+<div class="layui-form-item">
+    <label class="layui-form-label">系统名称</label>
+    <div class="layui-input-block">
+        <input name="sys_name" required placeholder="请输入系统名称" value="{:sysconf('sys_name')}" class="layui-input">
+        <p class="help-block">系统名称，将在浏览器的标签上显示 {:sysconf('sys_name')}</p>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">Browser<br><span class="nowrap text-grey">浏览器图标</span></label>
+    <div class="layui-input-block">
+        <img alt="icon" data-tips-image style="height:auto;max-height:32px;min-width:32px" src="{:sysconf('sys_icon')}"/>
+        <input type="hidden" name="sys_icon" onchange="$(this).prev('img').attr('src', this.value)" value="{:sysconf('sys_icon')}" class="layui-input">
+        <a class="text-default" data-upload-img data-field='sys_icon'>上传图片</a>
+        <p class="help-block">建议上传 ICO 图标的尺寸为 128x128px，此图标用于系统标题前，<a class="text-default" href="http://www.favicon-icon-generator.com/" target="_blank">ICON在线制作</a></p>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">Copyright<br><span class="nowrap text-grey">版权信息</span></label>
+    <div class="layui-input-block">
+        <input name="sys_copy" required placeholder="请输入版权信息" value="{:sysconf('sys_copy')}" class="layui-input">
+        <p class="help-block">系统的版权信息设置，在后台登录页面显示版本信息</p>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">Miitbeian<br><span class="nowrap text-grey">系统备案号</span></label>
+    <div class="layui-input-block">
+        <input name="sys_miitbeian" placeholder="请输入系统备案号" value="{:sysconf('sys_miitbeian')}" class="layui-input">
+        <p class="help-block">系统备案号，可以在<a class="text-default" target="_blank" href="http://beian.miit.gov.cn/publish/query/indexFirst.action">备案管理中心</a>查询获取，将在登录页面下面显示</p>
+    </div>
+</div>
+
+
+<div class="layui-form-item">
+    <label class="layui-form-label">Map Key<br><span class="nowrap color-desc">腾讯地图</span></label>
+    <div class="layui-input-block">
+        <input name="qq_map" value="{:sysconf('qq_map')}" class="layui-input">
+        <p class="help-block">腾讯地图Ky，可以在<a target="_blank" class="text-blue" href="https://lbs.qq.com/">腾讯位置服务</a>获取</p>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">Iconfont<br><span class="nowrap color-desc">图标</span></label>
+    <div class="layui-input-block">
+        <input name="ui_icon" value="{:sysconf('ui_icon')}" class="layui-input">
+        <p class="help-block">跳转<a target="_blank" class="text-blue" href="https://www.iconfont.cn//">阿里巴巴矢量图标库</a></p>
+    </div>
+</div>

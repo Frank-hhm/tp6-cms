@@ -1,0 +1,101 @@
+{extend name='main'}
+{block name="button"}
+    {if auth("admin/icon/add")}
+        <button data-modal='{:url("add")}' data-title="添加" class='ui-btn'>添加</button>
+    {/if}
+{/block}
+{block name="content"}
+    <div class="think-box-shadow">
+        <div class="icon-list">
+            {foreach $list as $key=>$vo}
+            <div class="icon-item">
+                <div class="icon">
+                    <i class="{$vo.title}"></i>
+                    <div class="icon-title nowrap">{$vo.title}</div>
+                </div>
+                <div class="btn-box">
+                    {if auth("admin/icon/remove")}
+                    <div class="ui ui-del del btn" title="删除" data-action="{:url('remove')}" data-confirm="确定要删除吗？"  data-value="icon_id#{$vo.icon_id}"></div>
+                    {/if}
+                    <div class="copy btn" data-copy="{$vo.title}">复制</div>
+                    {if auth("admin/icon/edit")}
+                    <div class="ui ui-edit edit btn"  title="编辑" data-modal="{:url('edit')}?icon_id={$vo.icon_id}"></div>
+                    {/if}
+                </div>
+            </div>
+            {/foreach}
+        </div>
+    </div>
+{/block}
+
+
+{block name="style"}
+<style>
+    .icon-list .icon-item .del:hover, .icon-list .icon-item .edit:hover {
+        color: red;
+    }
+    .icon-list .icon-item .copy:hover{
+        color: var(--green)
+    }
+    .icon-list .icon-item{
+        width:10%;
+        min-width: 120px;
+        height: 65px;
+        display: block;
+        float: left;
+        margin-right: -1px;
+        margin-left: -2px;
+        margin-bottom: -2px;
+        cursor: pointer;
+        font-size: 14px;
+        overflow: hidden;
+        text-align: center;
+        padding: 15px 0 10px 0;
+        user-select: none;
+        -ms-user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        transition: all .2s linear;
+        -o-transition: all .2s linear;
+        -moz-transition: all .2s linear;
+        -webkit-transition: all .2s linear;
+        position: relative;
+        color: #333;
+    }
+    .icon-list{
+        display: flex;
+        flex-wrap: wrap;
+        border-bottom: 1px solid #f5f5f5;
+    }
+    .icon-list .icon-item:hover .btn{
+        display: block;
+    }
+
+    .icon-list .icon-item i,
+    .icon-list .icon-item span{
+        color: #333;
+        display: inline-block;
+        font-size:24px !important
+    }
+
+    .icon-list .icon-item .btn{
+        font-size: 13px;
+        white-space: nowrap
+    }
+    .btn-box{
+        width: 100%;
+        height: 65px;
+        line-height: 65px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: none;
+        background: rgba(13,10,49,.9);
+        color: #fff;
+        justify-content: space-around;
+    }
+    .icon-list .icon-item:hover .btn-box{
+        display: flex;
+    }
+</style>
+{/block}

@@ -1,0 +1,85 @@
+{extend name='main'}
+{block name="button"}
+    {if auth("admin/system_user/add")}
+        <button data-modal='{:url("add")}' data-title="添加用户" class='ui-btn'>添加用户</button>
+    {/if}
+{/block}
+{block name="content"}
+<div class="think-box-shadow">
+    {include file='system_user/search'}
+    <table class="layui-table margin-top-10" lay-skin="line">
+        {notempty name='list'}
+        <thead>
+        <tr>
+           <!--  <th class='list-table-check-td think-checkbox'>
+                <input data-auto-none data-check-target='.list-check-box' type='checkbox'>
+            </th> -->
+            <th class='text-left nowrap'>账号</th>
+            <th class='text-left nowrap'>其他信息</th>
+            <th class='text-center nowrap' width="60">登录次数</th>
+            <th class='text-left nowrap'>登录Ip</th>
+            <th class='text-left nowrap'>最后登录实际</th>
+            <th class='text-left nowrap'>创建时间</th>
+            <th class='text-center nowrap' width="60">使用状态</th>
+            <th class='text-left nowrap'></th>
+        </tr>
+        </thead>
+        {/notempty}
+        <tbody>
+        {foreach $list as $key=>$vo}
+        <tr data-dbclick>
+            <!-- <td class='list-table-check-td think-checkbox'>
+                <input class="list-check-box" value='{$vo.user_id}' type='checkbox'>
+            </td> -->
+            <td class='text-left nowrap'>
+                <span class="text-blue">{$vo.username|default=''}</span><br/>
+                <span class="text-grey">手机：{$vo.phone|default='无'}</span>
+            </td>
+            <td class='text-left nowrap'>
+                邮箱：{$vo.email|default='无'}<br/>
+                Q Q：{$vo.qq|default='无'}
+            </td>
+            <td class='text-center nowrap'>
+                <span class="text-red">{$vo.login_num|default='0'}</span>
+            </td>
+            <td class='text-left nowrap'>
+                <span class="text-blue">{$vo.login_ip|default='未知'}</span>
+            </td>
+            <td class='text-left nowrap'><span class="text-grey">日期：{$vo.login_at|format_datetime|str_replace=' ','<br>时间：',###|raw}</span></td>
+            <td class='text-left nowrap'><span class="text-grey">日期：{$vo.create_at|format_datetime|str_replace=' ','<br>时间：',###|raw}</span></td>
+            <td class='text-center nowrap'>
+                {if $vo.status eq 10 }
+                    {if auth("admin/system_user/forbid")}
+                        <a class="text-green"  data-action="{:url('forbid')}" data-value="user_id#{$vo.user_id}" data-csrf="{:url('forbid')}">使用中</a>
+                    {else}
+                        <span class="text-green">使用中</span>
+                    {/if}
+                {else}
+                    {if auth("admin/system_user/remove")}
+                        <a class="text-red" data-action="{:url('resume')}" data-value="user_id#{$vo.user_id}" data-csrf="{:url('resume')}">已禁用</a>
+                    {else}
+                        <span class="text-red">已禁用</span>
+                    {/if}
+                {/if}
+            </td>
+            <td class='text-right nowrap'>
+                {if auth("admin/system_user/edit")}
+                <a class="ui-btn xs bg-black" data-title="设置密码"  data-modal='{:url("pass")}?user_id={$vo.user_id}'>密 码</a>
+                <a data-dbclick class="ui-btn xs bg-yellow" data-title="编辑用户" data-modal='{:url("edit")}?user_id={$vo.user_id}'><i class="ui ui-edit"></i></a>
+                {/if}
+                {if auth("admin/system_user/remove")}
+                <a class="ui-btn xs bg-gray" data-confirm="确定要删除该用户吗？" data-action="{:url('remove')}" data-value="user_id#{$vo.user_id}"><i class="ui ui-del"></i></a>
+                {/if}
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+    {empty name='list'}
+    <div class="empty-data"><img src="__STATIC__/common/img/empty.png"></div>
+    <span class="notdata">暂无数据</span>
+    {else}
+    {$list|raw|default=''}
+    {/empty}
+</div>
+{/block}

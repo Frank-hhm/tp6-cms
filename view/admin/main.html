@@ -1,0 +1,41 @@
+{if isset($sidebar_menus)}
+	<div class="left-sidebar">
+		<ul class="left-sidebar-second">
+			{foreach $sidebar_menus as $vs}
+				<li class="sidebar-second-title">{$vs.title|default=''}</li>
+				<li class="sidebar-second-item">
+					{if isset($vs.sub)}
+						{foreach $vs.sub as $vss}
+							<div>
+								<a data-open="{:url($vss.url)}?sub-id={$vs.menu_id}&sidebar-id={$vss.menu_id}&{$vss.params}" {if isset($vss.sidebar) and $vss.sidebar}class="active"{/if}>
+									{$vss.title|default=''}
+								</a>
+							</div>
+						{/foreach}
+					{/if}
+				</li>
+			{/foreach}
+		</ul>
+	</div>
+	<style>
+		.left-sidebar{height: 100%;position: fixed;border-left: 1px solid #e8e8e8;}
+		.left-sidebar .left-sidebar-second{width: 120px;min-height: 100%;background: #fff;}
+		.left-sidebar .left-sidebar-second .sidebar-second-title {height:50px;line-height: 50px;text-align: center;font-size: 16px;color: #333;}
+		.left-sidebar .left-sidebar-second .sidebar-second-item>div{width: 100%;}
+		.left-sidebar .left-sidebar-second .sidebar-second-item a {width: 100%;min-height: 40px;line-height: 40px;padding-left:20px;color: #555;}
+		.left-sidebar .left-sidebar-second .sidebar-second-item a.active{color: var(--blue)!important;}
+		.layui-body>.layui-card{margin-left: 120px;}
+	</style>
+{/if}
+<div class="layui-card" style="background: #f5f7f9;">
+    {block name='style'}{/block}
+    {if isset($title)}
+    <div class="layui-card-header layui-anim layui-anim-fadein notselect bg-white">
+    	<span class="ui ui-right-2"></span>
+	    <span class="text-black">{$title|default=''}</span>
+        <div class="pull-right">{block name='button'}{/block}</div>
+    </div>
+    {/if}
+    <div class="layui-card-body">{block name='content'}{/block}</div>
+    {block name='script'}{/block}
+</div>

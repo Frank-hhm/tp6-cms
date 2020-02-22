@@ -1,0 +1,19 @@
+<form class="layui-form layui-card" action="{:request()->url()}" data-auto="true" method="post" autocomplete="off">
+
+    <div class="layui-card-body">
+
+       <div class="layui-form-item">
+            <label class="layui-form-label">图标代码</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" required value='{$vo.title|default=""}'  placeholder="请输入图标代码" class="layui-input">
+            </div>
+        </div>
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    {notempty name='vo.icon_id'}<input type='hidden' value='{$vo.icon_id}' name='icon_id'>{/notempty}
+    <div class="layui-form-item text-center">
+        <button class="ui-btn" type='submit'>保存数据</button>
+        <button class="ui-btn bg-gray" type='button' data-close>取消</button>
+    </div>
+</form>

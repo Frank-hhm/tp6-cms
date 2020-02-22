@@ -1,0 +1,25 @@
+<form class="layui-form layui-card" action="{:request()->url()}" data-auto="true" method="post" autocomplete="off">
+    <div class="layui-card-body">
+       <div class="layui-form-item">
+            <label class="relative block">
+                <span class="text-green">角色名称</span>
+                <span class="text-grey margin-left-5">Title</span>
+                <input name="title" value='{$vo.title|default=""}' required pattern="^.{2,}$" placeholder="请输入角色名称" class="layui-input">
+            </label>
+        </div>
+        <div class="layui-form-item">
+            <label class="relative block">
+                <span class="text-green">描述</span>
+                <span class="text-grey margin-left-5">Description</span>
+                <textarea placeholder="请输入描述" class="layui-textarea" name="desc">{$vo.desc|default=""}</textarea>
+            </label>
+        </div>
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    {notempty name='vo.auth_id'}<input type='hidden' value='{$vo.auth_id}' name='auth_id'>{/notempty}
+    <div class="layui-form-item text-center">
+        <button class="ui-btn" type='submit'>保存</button>
+        <button class="ui-btn bg-gray" type='button' data-close>取消</button>
+    </div>
+</form>

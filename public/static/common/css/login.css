@@ -1,0 +1,67 @@
+/*
+* @Author: 小明
+* @Date:   2020-02-21 19:10:35
+* @Last Modified by:   根子科技
+* @Last Modified time: 2020-02-22 16:55:00
+*/
+@import url("ui.css");
+@charset "UTF-8";
+body,html{
+    height:100%;
+    background:#fff;
+    background:url(../img/login_bg.jpg) center center/cover no-repeat !important
+}
+
+.login-container .form-header{
+	width: 100%;
+	height:40px;
+	line-height: 40px;
+	width: 100%;
+	text-align: center;
+	color: #000;
+	font-size: 16px;
+}
+
+.login-container form{    
+    width:360px;
+    min-height:200px;
+    position: fixed;
+    left: calc(50% - 180px);
+    top: calc(50% - 260px);
+    background: #fff;
+    overflow: hidden;
+    border-radius: 10px;
+    padding:20px 60px 20px;
+    vertical-align: middle;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    box-shadow: rgba(199, 199, 199, 0.18) 0 0 70px 8px;
+    animation: fade-in;
+    animation-duration: .6s;
+    -webkit-animation: fade-in .6s;
+}
+.login-container form .form-item{position:relative;margin-top:20px;}
+.login-container form .form-item input{
+  	padding-left: 40px;
+    height: 40px;
+    border-radius:5px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #000;
+}
+.form-item .icon{
+	font-size: 20px;
+	position: absolute;
+	top:10px;
+	left: 10px;
+	color: #999
+}
+.login-container .footer{margin:30px auto 5px;width:100%;color:#555;text-align:center;letter-spacing:1px;line-height:18px}
+.login-container .footer a,.login-container .footer span{color:#555}
+.login-container .footer a:hover{color:#ccc}
+
+
+
+
+

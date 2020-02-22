@@ -1,0 +1,75 @@
+{extend name='main'}
+
+{block name="button"}
+    {if auth("admin/menu/add")}
+        <button data-modal='{:url("add")}' data-title="添加菜单" class='ui-btn'>添加菜单</button>
+    {/if}
+{/block}
+
+{block name="content"}
+<div class="think-box-shadow">
+    <div class="think-bg-white">
+        {empty name='list'}
+        <blockquote class="layui-elem-quote">没 有 记 录 哦！</blockquote>
+        {else}
+        <table class="layui-table" lay-skin="line">
+            <thead>
+            <tr>
+                <th class='list-table-sort-td'>
+                    <a  data-reload class="text-blue">刷 新</a>
+                </th>
+                <th class='text-left' style="width:20px">ID</th>
+                <th class='text-center' style="width:30px"></th>
+                <th></th>
+                <th class='layui-hide-xs'></th>
+                <th style="width:30px"></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {foreach $list as $key=>$vo}
+            <tr data-dbclick>
+                <td class='list-table-sort-td'>
+                    <input data-action-blur="{:request()->url()}" data-value="menu_id#{$vo.menu_id};action#sort;sort#{value}" data-loading="false" value="{$vo.sort}" class="list-sort-input">
+                </td>
+                <td class='text-left text-blue'>{$vo.menu_id}</td>
+                <td class='text-center'><i class="{$vo.icon} font-s18"></i></td>
+                <td class="nowrap"><span class="color-desc">{$vo.spl|raw}</span>{$vo.title}</td>
+                <td class='layui-hide-xs'>{$vo.url}</td>
+                <td class='text-center nowrap'>
+                    {if $vo.status eq 10 }
+                        {if auth("admin/menu/forbid")}
+                            <a class="text-green"  data-confirm="确定要禁用菜单吗？" data-action="{:url('forbid')}" data-value="menu_id#{$vo.ids}" data-csrf="{:url('forbid')}">使用中</a>
+                        {/if}
+                    {else}
+                        {if auth("admin/menu/resume")}
+                            <a class="text-red" data-action="{:url('resume')}" data-value="menu_id#{$vo.ids}" data-csrf="{:url('resume')}">已禁用</a>
+                        {/if}
+                    {/if}
+                </td>
+                <td class='text-right nowrap'>
+                    {if auth("admin/menu/add")}
+                    <!--{if $vo.spt < 2}-->
+                    <a class="ui-btn xs bg-green" data-title="添加子菜单" data-modal='{:url("add")}?pid={$vo.menu_id}'>添加</a>
+                    <!--{else}-->
+                    <a class="ui-btn xs disabled">添加</a>
+                    <!--{/if}-->
+                    {/if}
+
+                    {if auth("admin/menu/add")}
+                    <a data-dbclick class="ui-btn xs bg-yellow" data-title="编辑菜单" data-modal='{:url("edit")}?menu_id={$vo.menu_id}'><i class="ui ui-edit"></i></a>
+                    {/if}
+
+                    {if auth("admin/menu/remove")}
+                    <a class="ui-btn xs bg-gray" data-confirm="确定要删除数据吗?" data-action="{:url('remove')}" data-value="menu_id#{$vo.ids}" data-csrf="{:url('remove')}"><i class="ui ui-del"></i></a>
+                    {/if}
+                    
+                </td>
+            </tr>
+            {/foreach}
+            </tbody>
+        </table>
+        {/empty}
+    </div>
+</div>
+{/block}

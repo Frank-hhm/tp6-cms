@@ -1,0 +1,40 @@
+{extend name="main"}
+
+{block name="content"}
+<div class="think-box-shadow">
+    <form onsubmit="return false;" data-auto="true" action="{:url('config')}" method="post" class='layui-form layui-card' autocomplete="off">
+        <div class="layui-card-body">
+            <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title notselect">
+                    <li data-type='website'>网站参数设置</li>
+                </ul>
+                <div class="layui-tab-content  margin-top-50">
+                    <div class="layui-tab-item">{include file='system/info-website'}</div>
+                </div>
+            </div>
+            <div class="hr-line-dashed margin-left-40"></div>
+            <div class="layui-form-item text-center padding-bottom-10">
+                <button class="ui-btn shadow" type="submit">保存配置</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{/block}
+
+{block name="script"}
+
+<script>
+    (function (storage) {
+        (function (type, $default, $checked) {
+            $default = $('.layui-tab ul.layui-tab-title li:first');
+            $checked = $('.layui-tab ul.layui-tab-title li[data-type="' + type + '"]');
+            ($checked.length > 0 ? $checked : $default).trigger('click');
+        })(layui.data(storage)['type'] || '');
+        $('.layui-tab ul.layui-tab-title li[data-type]').on('click', function () {
+            layui.data(storage, {key: 'type', value: this.getAttribute('data-type')});
+        });
+    })('website-config-type');
+</script>
+
+{/block}
